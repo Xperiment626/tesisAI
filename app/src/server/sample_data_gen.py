@@ -21,9 +21,11 @@ grouped = df.groupby("label")
 # Initialize an empty list to store the selected rows
 
 for i in range(20):
-    n_samples = {"POSITIVE": np.random.randint(20, 100), 
-                 "NEGATIVE": np.random.randint(20, 100), 
-                 "NEUTRAL": np.random.randint(20, 100)}
+    n_samples = {
+        "NEGATIVE": np.random.randint(1, 100), 
+        "POSITIVE": np.random.randint(1, 100), 
+        "NEUTRAL": np.random.randint(1, 100)
+    }
     selected_rows = []
     # Loop through each group and select random rows
     for name, group in grouped:
@@ -35,4 +37,4 @@ for i in range(20):
     df_random = df.loc[selected_rows]
     df_random = df_random.drop(['label'], axis=1)
     # Export the new dataframe to JSON format
-    df_random.to_json(f"sample_dataset_subject{i+10}.json", orient="records")
+    df_random.to_json(f"dataset_defense{i+1}.json", orient="records")

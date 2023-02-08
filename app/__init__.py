@@ -30,13 +30,13 @@ def process_results(results):
     mid_state = list(sorted_dict.keys())[1]
     mayor_state = list(sorted_dict.keys())[2]
     
-    sub_total = uniques[mid_state] + uniques[minor_state]
+    total = uniques[mid_state] + uniques[minor_state] + uniques[mayor_state]
     
     emotional_states = {
-        'C1': ['Emocionado', 'Feliz', 'Complacido'],
-        'C2': ['Nervioso', 'Molesto', 'Enojado'],
-        'C3': ['Somnoliento', 'Aburrido', 'Triste'],
-        'C4': ['Relajado', 'Pacifico', 'Calmado']
+        'C1': ['Emocionado', 'Feliz'],
+        'C2': ['Molesto', 'Frustrado'],
+        'C3': ['Triste', 'Aburrido'],
+        'C4': ['Contento', 'Conforme']
     }
     
     y = {
@@ -46,36 +46,39 @@ def process_results(results):
         'negative': False
     }
     
-    if mayor_state == 0:
+    # NEUTRO
+    if mayor_state == 1:
+        if dictionary[mid_state] == 2:
+            y['high'] = dictionary[mayor_state]/total
+            y['low'] = 0
+            y['positive'] = True
+            y['negative'] = False
+        else:
+            y['high'] = 0
+            y['low'] = dictionary[mayor_state]/total
+            y['positive'] = False
+            y['negative'] = True
+    # POSITIVO
+    elif mayor_state == 2:
         if dictionary[mid_state] == 1:
-            y['high'] = dictionary[mid_state]/sub_total
+            y['high'] = dictionary[mayor_state]/total
             y['low'] = 0
             y['positive'] = True
             y['negative'] = False
         else:
             y['high'] = 0
-            y['low'] = dictionary[mid_state]/sub_total
-            y['positive'] = False
-            y['negative'] = True
-    elif mayor_state == 1:
-        if dictionary[mid_state] == 0:
-            y['high'] = dictionary[mid_state]/sub_total
-            y['low'] = 0
+            y['low'] = dictionary[mayor_state]/total
             y['positive'] = True
             y['negative'] = False
-        else:
-            y['high'] = 0
-            y['low'] = dictionary[mid_state]/sub_total
-            y['positive'] = True
-            y['negative'] = False
+    # NEGATIVO
     else:
-        if dictionary[mid_state] == 0:
+        if dictionary[mid_state] == 2:
             y['high'] = 0
-            y['low'] = dictionary[mid_state]/sub_total
+            y['low'] = dictionary[mayor_state]/total
             y['positive'] = False
             y['negative'] = True
         else:
-            y['high'] = dictionary[mid_state]/sub_total
+            y['high'] = dictionary[mayor_state]/total
             y['low'] = 0
             y['positive'] = False
             y['negative'] = True
@@ -83,30 +86,22 @@ def process_results(results):
     emotional_state = ''
     
     if y['positive']:
-        if y['high'] > 0 and y['high'] <= 0.33:
-            emotional_state = emotional_states['C1'][2]
-        elif y['high'] > 0.33 and y['high'] <= 0.66:
+        if y['high'] > 0 and y['high'] <= 0.5:
             emotional_state = emotional_states['C1'][1]
-        elif y['high'] > 0.66:
+        elif y['high'] > 0.5:
             emotional_state = emotional_states['C1'][0]
-        elif y['low'] > 0 and y['low'] <= 0.33:
-            emotional_state = emotional_states['C4'][2]
-        elif y['low'] > 0.33 and y['low'] <= 0.66:
+        elif y['low'] > 0 and y['low'] <= 0.5:
             emotional_state = emotional_states['C4'][1]
-        elif y['low'] > 0.66:
+        elif y['low'] > 0.5:
             emotional_state = emotional_states['C4'][0]
     else:
-        if y['high'] > 0 and y['high'] <= 0.33:
-            emotional_state = emotional_states['C2'][2]
-        elif y['high'] > 0.33 and y['high'] <= 0.66:
+        if y['high'] > 0 and y['high'] <= 0.5:
             emotional_state = emotional_states['C2'][1]
-        elif y['high'] > 0.66:
+        elif y['high'] > 0.5:
             emotional_state = emotional_states['C2'][0]
-        elif y['low'] > 0 and y['low'] <= 0.33:
-            emotional_state = emotional_states['C3'][2]
-        elif y['low'] > 0.33 and y['low'] <= 0.66:
+        elif y['low'] > 0 and y['low'] <= 0.5:
             emotional_state = emotional_states['C3'][1]
-        elif y['low'] > 0.66:
+        elif y['low'] > 0.5:
             emotional_state = emotional_states['C3'][0]
             
     print(dictionary, y, emotional_state)
